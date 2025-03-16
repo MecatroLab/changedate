@@ -3,7 +3,9 @@
 """
 Created on Mon Mar 10 08:02:07 2025
 
-@author: mecatrolab
+@author: MecatroLab
+
+This program allows you to change the date of photos and videos located in the folder indicated by the path.
 """
 
 import datetime
@@ -14,12 +16,25 @@ from pathlib import Path
 
 
 def get_all_file_paths(directory):
-    """Recovers all files in a folder and subfolders."""
+    """Function that lists the paths of files in a directory folder.
+    INPUT :
+        directory : STR : path to the folder
+    OUTPUT :
+        file : list : list of paths
+    """
     return [str(file) for file in Path(directory).rglob("*") if file.is_file()]
 
 
 def change_photo_date(image_path, new_date, file_number, file_number_total):
-    """Changes the date of a photo's EXIF ​​metadata."""
+    """Function to change the date of a file specified in new_date, whose path is image_path.
+    INPUT :
+        image_path : STR : path to the folder
+        new_date : datetime : new date for the file
+        file_number : INT : number of the file
+        file_number_total : INT : number total of files in the folder
+    OUTPUT :
+        None
+    """
     img = Image.open(image_path)
     exif_dict = piexif.load(img.info.get("exif", b""))
     
@@ -37,7 +52,15 @@ def change_photo_date(image_path, new_date, file_number, file_number_total):
     print(f"Date changée pour {image_path} fichier n°{file_number} / {file_number_total}")
 
 def change_video_date(video_path, new_date, file_number, file_number_total):
-    """Change the creation date of a video using ffmpeg."""
+    """Change the creation date of a video using ffmpeg.
+    INPUT :
+        image_path : STR : path to the folder
+        new_date : datetime : new date for the file
+        file_number : INT : number of the file
+        file_number_total : INT : number total of files in the folder
+    OUTPUT :
+        None
+    """
     formatted_date = new_date.strftime("%Y-%m-%dT%H:%M:%S")
     temp_file = video_path + ".temp.mp4"
     
@@ -53,7 +76,13 @@ def change_video_date(video_path, new_date, file_number, file_number_total):
 
 
 def process_files(directory, new_date):
-    """Process each files from the directory, exclude files that are not photos or videos."""
+    """Process each files from the directory, exclude files that are not photos or videos.
+    INPUT :
+        directory : STR : path to the folder
+        new_date : datetime : new date for the file
+    OUTPUT :
+        None
+    """
     files = get_all_file_paths(directory)
     file_number = 1
     file_number_total = len(files)
@@ -67,7 +96,7 @@ def process_files(directory, new_date):
             print(f"Format non supporté : {file_path}")
         file_number += 1
 
-#Main
-directory = "Path/to/folder"             #Enter here the path to your files' folder
-new_date = datetime.datetime(2025, 3, 3) #Date AAAA MM JJ
+# Main
+directory = "Path/to/folder"             # Enter here the path to your files' folder
+new_date = datetime.datetime(2025, 3, 3) # Date YYYY MM DD
 process_files(directory, new_date)
