@@ -14,12 +14,12 @@ from pathlib import Path
 
 
 def get_all_file_paths(directory):
-    """Récupère tous les fichiers d'un dossier et sous-dossiers."""
+    """Recovers all files in a folder and subfolders."""
     return [str(file) for file in Path(directory).rglob("*") if file.is_file()]
 
 
 def change_photo_date(image_path, new_date, file_number, file_number_total):
-    """Modifie la date des métadonnées EXIF d'une photo."""
+    """Changes the date of a photo's EXIF ​​metadata."""
     img = Image.open(image_path)
     exif_dict = piexif.load(img.info.get("exif", b""))
     
@@ -37,12 +37,11 @@ def change_photo_date(image_path, new_date, file_number, file_number_total):
     print(f"Date changée pour {image_path} fichier n°{file_number} / {file_number_total}")
 
 def change_video_date(video_path, new_date, file_number, file_number_total):
-    """Modifie la date de création d'une vidéo avec ffmpeg."""
+    """Change the creation date of a video using ffmpeg."""
     formatted_date = new_date.strftime("%Y-%m-%dT%H:%M:%S")
     temp_file = video_path + ".temp.mp4"
     
-    # Utilise le chemin de l'exécutable ffmpeg ici
-    FFMPEG_PATH = "/usr/local/bin/ffmpeg"  # Assure-toi que ce soit le bon chemin de ffmpeg
+    FFMPEG_PATH = "/usr/local/bin/ffmpeg"  # Enter here the path of your ffmeg on your computer, depending of your OS
 
     command = [FFMPEG_PATH, "-i", video_path, "-metadata", f"creation_time={formatted_date}",
     "-codec", "copy", temp_file]
@@ -54,6 +53,7 @@ def change_video_date(video_path, new_date, file_number, file_number_total):
 
 
 def process_files(directory, new_date):
+    """Process each files from the directory, exclude files that are not photos or videos."""
     files = get_all_file_paths(directory)
     file_number = 1
     file_number_total = len(files)
@@ -67,7 +67,7 @@ def process_files(directory, new_date):
             print(f"Format non supporté : {file_path}")
         file_number += 1
 
-# Paramètres
-directory = "/Users/merilcrouzet/Library/CloudStorage/OneDrive-Personnel/MAUVAISE_DATE"
-new_date = datetime.datetime(2025, 3, 3) #Date sous la forme AAAA MM JJ
+#Main
+directory = "Path/to/folder"             #Enter here the path to your files' folder
+new_date = datetime.datetime(2025, 3, 3) #Date AAAA MM JJ
 process_files(directory, new_date)
